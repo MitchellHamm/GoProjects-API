@@ -73,10 +73,8 @@ class ProjectController extends Controller
       return $e->getResponse();
     }
 
-    $user = JWTAuth::parseToken()->authenticate();
-    return new JsonResponse([
-      'message' => 'add member project route!'
-    ]);
+    $result = ProjectService::addMember($request);
+    return new JsonResponse($result);
   }
 
   public function requestMembership(Request $request)

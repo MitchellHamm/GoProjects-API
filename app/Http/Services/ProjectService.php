@@ -3,13 +3,8 @@ namespace App\Http\Services;
 
 use App\Project;
 use App\ProjectUsers;
-use Laravel\Lumen\Application;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Tymon\JWTAuth\Exceptions\JWTException;
+use App\User;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Illuminate\Validation\ValidationException;
 
 class ProjectService {
   public static function createProject($request) {
@@ -161,6 +156,54 @@ class ProjectService {
     } else {
       $result['data'] = [
         'error' => 'The project does not exist',
+      ];
+    }
+
+    return $result;
+  }
+
+  public static function addMember($request) {
+    $result = [
+      'status' => 0,
+      'data' => [],
+    ];
+    $user = JWTAuth::parseToken()->authenticate();
+    $projectId = $request->input('project_id');
+    $memberId = $request->input('user_id');
+    $project = Project::where('id', '=', $projectId)->get();
+    $member = User::where('id', '=', $memberId)->get();
+
+    if(!$project->isEmpty() && !$member->isEmpty()) {
+      $projectUser = ProjectUsers::where([
+        ['project_id', '=', $projectId],
+        ['user_id', '=', $user->id],
+      ])->get();
+
+      if(!$projectUser->isEmpty() && $projectUser->first()->is_owner === 1) {
+        $projectUserData = [
+          'project_id' => $projectId,
+          'user_id' => $memberId,
+          'is_owner' => '0',
+        ];
+
+        $projectUser = ProjectUsers::create($projectUserData);
+
+        if(!is_null($projectUser)) {
+          $result['status'] = 1;
+        } else {
+          //Remove the project and return an error
+          $result['data'] = [
+            'error' => 'Could not link user to the project',
+          ];
+        }
+      } else {
+        $result['data'] = [
+          'error' => 'You are not the creator of this project. Only a project creator can add a member',
+        ];
+      }
+    } else {
+      $result['data'] = [
+        'error' => 'The project or user does not exist',
       ];
     }
 
