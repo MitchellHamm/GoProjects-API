@@ -19,6 +19,14 @@ class UserController extends Controller
    */
   public function search(Request $request)
   {
+    try {
+      $this->validate($request, [
+        'query_string' => 'required|min:3',
+      ]);
+    } catch (ValidationException $e) {
+      return $e->getResponse();
+    }
+
     $user = JWTAuth::parseToken()->authenticate();
     return new JsonResponse([
       'message' => 'search user route!'

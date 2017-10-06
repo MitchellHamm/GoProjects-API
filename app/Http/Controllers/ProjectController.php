@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
+use Illuminate\Validation\ValidationException;
 
 class ProjectController extends Controller
 {
@@ -19,6 +20,14 @@ class ProjectController extends Controller
    */
   public function create(Request $request)
   {
+    try {
+      $this->validate($request, [
+        'name' => 'required|max:255',
+      ]);
+    } catch (ValidationException $e) {
+      return $e->getResponse();
+    }
+
     $user = JWTAuth::parseToken()->authenticate();
     return new JsonResponse([
       'message' => 'create project route!'
@@ -27,6 +36,14 @@ class ProjectController extends Controller
 
   public function edit(Request $request)
   {
+    try {
+      $this->validate($request, [
+        'project_id' => 'required',
+      ]);
+    } catch (ValidationException $e) {
+      return $e->getResponse();
+    }
+
     $user = JWTAuth::parseToken()->authenticate();
     return new JsonResponse([
       'message' => 'edit project route!'
@@ -35,6 +52,14 @@ class ProjectController extends Controller
 
   public function delete(Request $request)
   {
+    try {
+      $this->validate($request, [
+        'project_id' => 'required',
+      ]);
+    } catch (ValidationException $e) {
+      return $e->getResponse();
+    }
+
     $user = JWTAuth::parseToken()->authenticate();
     return new JsonResponse([
       'message' => 'delete project route!'
@@ -43,6 +68,15 @@ class ProjectController extends Controller
 
   public function addMember(Request $request)
   {
+    try {
+      $this->validate($request, [
+        'project_id' => 'required',
+        'user_id' => 'required',
+      ]);
+    } catch (ValidationException $e) {
+      return $e->getResponse();
+    }
+
     $user = JWTAuth::parseToken()->authenticate();
     return new JsonResponse([
       'message' => 'add member project route!'
@@ -51,6 +85,14 @@ class ProjectController extends Controller
 
   public function requestMembership(Request $request)
   {
+    try {
+      $this->validate($request, [
+        'project_id' => 'required',
+      ]);
+    } catch (ValidationException $e) {
+      return $e->getResponse();
+    }
+
     $user = JWTAuth::parseToken()->authenticate();
     return new JsonResponse([
       'message' => 'request membership project route!'
