@@ -1,4 +1,6 @@
 #Routes
+```
+⇒  php artisan route:list
 +----------+--------------------------------+-------------------------------+------------------------------------------+-------------------+--------------------------+
 | Verb     | Path                           | NamedRoute                    | Controller                               | Action            | Middleware               |
 +----------+--------------------------------+-------------------------------+------------------------------------------+-------------------+--------------------------+
@@ -13,3 +15,4 @@
 | PATCH    | api/auth/refresh               | api.auth.refresh              | App\Http\Controllers\Auth\AuthController | patchRefresh      | api.controllers|api.auth |
 | DELETE   | api/auth/invalidate            | api.auth.invalidate           | App\Http\Controllers\Auth\AuthController | deleteInvalidate  | api.controllers|api.auth |
 +----------+--------------------------------+-------------------------------+------------------------------------------+-------------------+--------------------------+
+```
