@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
+use App\ProjectUsers;
+use App\Project;
 use Laravel\Lumen\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -27,9 +30,24 @@ class UserController extends Controller
       return $e->getResponse();
     }
 
+    $queryString = $request->input('query_string');
+    $users = User::where('users.email', 'LIKE', "%$queryString%")
+      ->orWhere('users.first_name', 'LIKE', "%$queryString%")
+      ->orWhere('users.last_name', 'LIKE', "%$queryString%")
+      ->get();
+
+    return new JsonResponse($users);
+  }
+
+  public function getProjects()
+  {
+
     $user = JWTAuth::parseToken()->authenticate();
-    return new JsonResponse([
-      'message' => 'search user route!'
-    ]);
+
+    $projects = ProjectUsers::where('user_id', '=', "$user->id")
+      ->join('projects', 'projects.id', '=', 'project_users.project_id')
+      ->get();
+
+    return new JsonResponse($projects);
   }
 }

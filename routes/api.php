@@ -68,5 +68,9 @@ $api->version('v1', function ($api) {
           'uses' => 'App\Http\Controllers\UserController@search',
           'as' => 'api.user.search'
         ]);
+        $api->get('/user/get-projects', [
+          'uses' => 'App\Http\Controllers\UserController@getProjects',
+          'as' => 'api.user.getProjects'
+        ]);
     });
 });
