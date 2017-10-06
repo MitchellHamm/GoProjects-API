@@ -10,6 +10,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
+use App\Http\Services\ProjectService;
 
 class ProjectController extends Controller
 {
@@ -28,10 +29,9 @@ class ProjectController extends Controller
       return $e->getResponse();
     }
 
-    $user = JWTAuth::parseToken()->authenticate();
-    return new JsonResponse([
-      'message' => 'create project route!'
-    ]);
+    $result = ProjectService::createProject($request);
+
+    return new JsonResponse($result);
   }
 
   public function edit(Request $request)
