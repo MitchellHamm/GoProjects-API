@@ -22,10 +22,7 @@ $api->version('v1', function ($api) {
     $api->group([
         'middleware' => 'api.auth',
     ], function ($api) {
-        $api->get('/', [
-            'uses' => 'App\Http\Controllers\APIController@getIndex',
-            'as' => 'api.index'
-        ]);
+        //User validation
         $api->get('/auth/user', [
             'uses' => 'App\Http\Controllers\Auth\AuthController@getUser',
             'as' => 'api.auth.user'
@@ -37,6 +34,35 @@ $api->version('v1', function ($api) {
         $api->delete('/auth/invalidate', [
             'uses' => 'App\Http\Controllers\Auth\AuthController@deleteInvalidate',
             'as' => 'api.auth.invalidate'
+        ]);
+
+
+        //Project specific routes
+        $api->post('/project/create', [
+          'uses' => 'App\Http\Controllers\ProjectController@create',
+          'as' => 'api.project.create'
+        ]);
+        $api->post('/project/edit', [
+          'uses' => 'App\Http\Controllers\ProjectController@edit',
+          'as' => 'api.project.edit'
+        ]);
+        $api->post('/project/delete', [
+          'uses' => 'App\Http\Controllers\ProjectController@delete',
+          'as' => 'api.project.delete'
+        ]);
+        $api->post('/project/add-member', [
+          'uses' => 'App\Http\Controllers\ProjectController@addMember',
+          'as' => 'api.project.addMember'
+        ]);
+        $api->post('/project/request-membership', [
+          'uses' => 'App\Http\Controllers\ProjectController@requestMembership',
+          'as' => 'api.project.requestMembership'
+        ]);
+
+        //User specific routes
+        $api->post('/user/search', [
+          'uses' => 'App\Http\Controllers\UserController@search',
+          'as' => 'api.user.search'
         ]);
     });
 });
