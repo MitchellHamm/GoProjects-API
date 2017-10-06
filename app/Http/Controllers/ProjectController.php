@@ -44,10 +44,8 @@ class ProjectController extends Controller
       return $e->getResponse();
     }
 
-    $user = JWTAuth::parseToken()->authenticate();
-    return new JsonResponse([
-      'message' => 'edit project route!'
-    ]);
+    $result = ProjectService::editProject($request);
+    return new JsonResponse($result);
   }
 
   public function delete(Request $request)

@@ -60,4 +60,72 @@ class ProjectService {
 
     return $result;
   }
+
+  public static function editProject($request) {
+    $result = [
+      'status' => 0,
+      'data' => [],
+    ];
+    $user = JWTAuth::parseToken()->authenticate();
+    $projectData = [];
+    $projectData['id'] = $request->input('project_id');
+    $project = Project::find($projectData['id']);
+
+    if($request->has('name')) {
+      $projectData['name'] = $request->input('name');
+    }
+
+    if($request->has('status')) {
+      $projectData['status'] = $request->input('status');
+    }
+
+    if($request->has('description')) {
+      $projectData['description'] = $request->input('description');
+    }
+
+    if($request->has('client')) {
+      $projectData['client'] = $request->input('client');
+    }
+
+    if($request->has('training_date')) {
+      $projectData['training_date'] = $request->input('training_date');
+    }
+
+    if($request->has('live_date')) {
+      $projectData['live_date'] = $request->input('live_date');
+    }
+
+    if($request->has('project_color')) {
+      $projectData['project_color'] = $request->input('project_color');
+    }
+
+    //Handle uploaded image
+    if($request->hasFile('project_image') && $request->file('project_image')->isValid()) {
+      if(isset($projectData['name'])) {
+        $projectData['primary_image'] = $projectData['name'] . '-' . date("Y-m-d H:i:s");
+      } else {
+        $projectData['primary_image'] = $project->name . '-' . date("Y-m-d H:i:s");
+      }
+      $request->file('project_image')->move('/img', $projectData['primary_image']);
+    }
+
+    $projectUser = ProjectUsers::where([
+      ['project_id', '=', $projectData['id']],
+      ['user_id', '=', $user->id],
+    ])->get();
+
+    if(!is_null($project) && !$projectUser->isEmpty()) {
+      $project->fill($projectData);
+      $project->save();
+
+      $result['status'] = 1;
+      $result['data'] = $projectData;
+    } else {
+      $result['data'] = [
+        'error' => 'You do not have permission to edit this project. Please request membership first',
+      ];
+    }
+
+    return $result;
+  }
 }
