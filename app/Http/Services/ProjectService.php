@@ -128,4 +128,42 @@ class ProjectService {
 
     return $result;
   }
+
+  public static function deleteProject($request) {
+    $result = [
+      'status' => 0,
+      'data' => [],
+    ];
+    $user = JWTAuth::parseToken()->authenticate();
+    $projectId = $request->input('project_id');
+    $project = Project::where('id', '=', $projectId)->get();
+
+    if(!$project->isEmpty()) {
+      $projectUser = ProjectUsers::where([
+        ['project_id', '=', $projectId],
+        ['user_id', '=', $user->id],
+      ])->get();
+
+      if(!$projectUser->isEmpty() && $projectUser->first()->is_owner === 1) {
+        $projectUserDelete = ProjectUsers::where([
+          ['project_id', '=', $projectId],
+        ])->delete();
+
+        if($projectUserDelete) {
+          Project::where('id', '=', $projectId)->delete();
+          $result['status'] = 1;
+        }
+      } else {
+        $result['data'] = [
+          'error' => 'You are not the creator of this project. Only a project creator can delete a project',
+        ];
+      }
+    } else {
+      $result['data'] = [
+        'error' => 'The project does not exist',
+      ];
+    }
+
+    return $result;
+  }
 }
