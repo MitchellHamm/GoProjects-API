@@ -16,3 +16,7 @@
 | DELETE   | api/auth/invalidate            | api.auth.invalidate           | App\Http\Controllers\Auth\AuthController | deleteInvalidate  | api.controllers|api.auth |
 +----------+--------------------------------+-------------------------------+------------------------------------------+-------------------+--------------------------+
 ```
+
+#Request Format
+For every guarded route, make sure to pass the following header:
+Authorization: Bearer a_long_token_appears_here
