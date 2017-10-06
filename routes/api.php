@@ -18,6 +18,10 @@ $api->version('v1', function ($api) {
         'as' => 'api.auth.login',
         'uses' => 'App\Http\Controllers\Auth\AuthController@postLogin',
     ]);
+    $api->post('/test', [
+      'as' => 'api.auth.test',
+      'uses' => 'App\Http\Controllers\Auth\AuthController@test',
+    ]);
 
     $api->group([
         'middleware' => 'api.auth',

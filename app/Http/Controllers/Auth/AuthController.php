@@ -13,6 +13,9 @@ use Illuminate\Http\Exception\HttpResponseException;
 
 class AuthController extends Controller
 {
+    public function test(Request $request) {
+      return new JsonResponse(['message' => 'token_invalidated']);
+    }
     /**
      * Handle a login request to the application.
      *
